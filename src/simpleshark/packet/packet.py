@@ -28,7 +28,7 @@ class Packet(object):
         self.interface_captured = frame.get_field_value('interface_id')
         self.captured_length = geninfo.get_field_value('caplen')
         self.length = geninfo.get_field_value('len')
-        self.sniff_timestamp = geninfo.get_field_value('timestamp')
+        self.timestamp = geninfo.timestamp
 
     def __repr__(self):
         transport_protocol = ''
@@ -73,13 +73,13 @@ class Packet(object):
         raise AttributeError("No attribute named %s" % item)
 
     @property
-    def sniff_time(self):
+    def sniff_timestamp(self):
         try:
-            timestamp = float(self.sniff_timestamp)
+            timestamp = float(self.timestamp.raw)
         except ValueError:
             # If the value after the decimal point is negative, discard it
             # Google: wireshark fractional second
-            timestamp = float(self.sniff_timestamp.split(".")[0])
+            timestamp = float(self.timestamp.raw.split(".")[0])
         return datetime.datetime.fromtimestamp(timestamp)
 
     @property

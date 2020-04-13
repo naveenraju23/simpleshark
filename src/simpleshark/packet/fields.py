@@ -1,3 +1,6 @@
+import datetime
+
+
 class Field(object):
 
     def __init__(self, xml, field_type='Field'):
@@ -33,6 +36,14 @@ class Field(object):
         retrieved by easier means.
         """
         return [field for field in self.fields if field.name.lower() == field_name.lower()]
+
+    def get_multiple_elements(self, element_name):
+        """
+        Returns a list of all the layers in the packet that are of the layer type (an incase-sensitive string).
+        This is in order to retrieve repeating IE elemnet layers which appear multiple times in the same packet (i.e. double VLAN) which cannot be
+        retrieved by easier means.
+        """
+        return [field for field in self.fields if element_name.lower() in field.name.lower()]
 
     def __repr__(self):
         try:
@@ -132,11 +143,21 @@ class Field(object):
         self._get_subtree_fields('', subtree_fields)
         return subtree_fields
 
+    @property
+    def sniff_timestamp(self):
+        if self.TYPE == 'Proto':
+            for field in self.fields:
+                if field.name == 'timestamp':
+                    val = field.properties['value']
+                    timestamp = float(val)
+                    return datetime.datetime.fromtimestamp(timestamp)
+        raise AttributeError("No attribute named %s" % 'sniff_timestamp')
+
     def get_field_value(self, name, raw=False):
         if self.TYPE == 'Proto':
             for field in self.fields:
                 if field.name == name and not raw:
-                    return getattr(field, 'show', None)
+                    return field.value
                 elif field.name == name and raw:
-                    return getattr(field, 'value', None)
+                    return field.raw
 
