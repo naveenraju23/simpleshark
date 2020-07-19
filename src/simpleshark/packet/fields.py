@@ -48,7 +48,7 @@ class Field(object):
     def __repr__(self):
         try:
             return '<%s %s : %s>' % (self.TYPE, self.name, self.value)
-        except AttributeError:
+        except (KeyError, AttributeError):
             return '<%s %s>' % (self.TYPE, self.name)
 
     def __contains__(self, field_name):
