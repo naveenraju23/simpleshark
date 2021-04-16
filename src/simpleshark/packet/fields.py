@@ -128,15 +128,23 @@ class Field(object):
         return self.properties['size']
 
     def _get_subtree_fields(self, parent, subtree_fields):
+        _grouped_fields = dict()
         for field in self.fields:
-            if parent:
-                _parent = '.'.join([parent, field.name])
-            else:
-                _parent = field.name
             _parent = '.'.join([parent, field.name]) if parent else field.name
-            subtree_fields[_parent] = field
-            if field.fields:
-                field._get_subtree_fields(_parent, subtree_fields)
+            if _parent not in _grouped_fields:
+                _grouped_fields[_parent] = []
+            _grouped_fields[_parent].append(field)
+
+        for field in _grouped_fields:
+            if len(_grouped_fields[field]) > 1:
+                for i in range(len(_grouped_fields[field])):
+                    _parent = field + '_' + str(i+1)
+                    _grouped_fields[field][i]._get_subtree_fields(_parent, subtree_fields)
+            else:
+                if _grouped_fields[field][0].fields:
+                    _grouped_fields[field][0]._get_subtree_fields(field, subtree_fields)
+                    continue
+                subtree_fields[field] = _grouped_fields[field][0]
 
     def get_subtree_fields(self):
         subtree_fields = dict()
