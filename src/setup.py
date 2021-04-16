@@ -6,7 +6,7 @@ with open(os.path.join(os.path.dirname(__file__), 'README.md')) as f:
 
 setuptools.setup(
     name="simpleshark",
-    version="0.0.2",
+    version="0.0.3",
     author="Naveen Raju",
     author_email="naveen.raju23@gmail.com",
     package_data={'': ['*.ini']},
