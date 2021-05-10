@@ -281,6 +281,9 @@ class FileCapture(object):
         # NOTE: This has code duplication with the async version, think about how to solve this
         tshark_process = existing_process or self.eventloop.run_until_complete(self._get_tshark_process())
         psml_structure, data = self.eventloop.run_until_complete(self._get_psml_struct(tshark_process.stdout))
+
+        # During summary gathering the first packet is lost as the packet data is lost before conversion. Hence new tshark process is created.
+        tshark_process = existing_process or self.eventloop.run_until_complete(self._get_tshark_process())
         packets_captured = 0
 
         data = b""
