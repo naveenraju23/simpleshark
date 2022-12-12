@@ -67,10 +67,17 @@ class Packet(object):
         """
         Allows layers to be retrieved via get attr. For instance: pkt.ip
         """
+        _protos = []
         for proto in self.protos:
             if proto.name == item:
-                return proto
-        raise AttributeError("No attribute named %s" % item)
+                _protos.append(proto)
+        if not _protos:
+            raise AttributeError("No attribute named %s" % item)
+
+        if len(_protos) > 1:
+            return _protos
+        else:
+            return _protos[-1]
 
     @property
     def sniff_timestamp(self):
