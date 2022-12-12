@@ -147,9 +147,9 @@ class Field(object):
                     _grouped_fields[field][0]._get_subtree_fields(field, subtree_fields)
                 subtree_fields[field] = _grouped_fields[field][0]
 
-    def get_subtree_fields(self):
+    def get_subtree_fields(self, index=''):
         subtree_fields = dict()
-        self._get_subtree_fields('', subtree_fields)
+        self._get_subtree_fields(index, subtree_fields)
         return subtree_fields
 
     @property
