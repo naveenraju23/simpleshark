@@ -4,6 +4,7 @@ import lxml.objectify
 from simpleshark.packet.fields import Field
 from simpleshark.packet.packet import Packet
 from simpleshark.packet.packet_summary import PacketSummary
+import re
 
 
 def psml_structure_from_xml(psml_structure):
@@ -23,7 +24,12 @@ def packet_from_xml_packet(xml_pkt, psml_structure=None):
     """
     if not isinstance(xml_pkt, lxml.objectify.ObjectifiedElement):
         parser = lxml.objectify.makeparser(huge_tree=True)
-        xml_pkt = lxml.objectify.fromstring(xml_pkt, parser)
+        try:
+            xml_pkt = lxml.objectify.fromstring(xml_pkt, parser)
+        except lxml.etree.XMLSyntaxError:
+            res = re.findall(r'<field name="num" pos="0" show="(.*?)"', xml_pkt.decode(), re.S)[0]
+            print(f'Packet conversion error from xml to python object for packet number {res}.')
+            return
     if psml_structure:
         return _packet_from_psml_packet(xml_pkt, psml_structure)
     return _packet_object_from_xml(xml_pkt)
