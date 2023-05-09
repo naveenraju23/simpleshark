@@ -23,7 +23,7 @@ def packet_from_xml_packet(xml_pkt, psml_structure=None):
     :return: Packet object.
     """
     if not isinstance(xml_pkt, lxml.objectify.ObjectifiedElement):
-        parser = lxml.objectify.makeparser(huge_tree=True)
+        parser = lxml.objectify.makeparser(huge_tree=True, recover=True)
         try:
             xml_pkt = lxml.objectify.fromstring(xml_pkt, parser)
         except lxml.etree.XMLSyntaxError:
