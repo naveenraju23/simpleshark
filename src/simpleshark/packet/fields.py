@@ -140,8 +140,8 @@ class Field(object):
                 for i in range(len(_grouped_fields[field])):
                     _parent = field + '_' + str(i+1)
                     if not _grouped_fields[field][i].fields:  # For fields which do not have sub-fields but have identical field name
-                        subtree_fields[_parent] = _grouped_fields[field][i]
-                    _grouped_fields[field][i]._get_subtree_fields(_parent, subtree_fields)
+                        _grouped_fields[field][i]._get_subtree_fields(_parent, subtree_fields)
+                    subtree_fields[_parent] = _grouped_fields[field][i]
             else:
                 if _grouped_fields[field][0].fields:
                     _grouped_fields[field][0]._get_subtree_fields(field, subtree_fields)
