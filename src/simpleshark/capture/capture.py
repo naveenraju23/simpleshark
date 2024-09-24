@@ -408,7 +408,12 @@ class FileCapture(object):
             if self.use_json:
                 packet = packet
             else:
-                self._log.debug('Packet XML Data = \n{}\n'.format(packet.decode('UTF-8')))
+                try:
+                    self._log.debug('Packet XML Data = \n{}\n'.format(packet.decode('UTF-8')))
+                except UnicodeDecodeError:
+                    packet = packet.decode('UTF-', 'ignore')
+                    packet = packet.encode()
+                    self._log.debug('Packet XML Data = \n{}\n'.format(packet.decode('UTF-8')))
                 packet = packet_from_xml_packet(packet, psml_structure=psml_structure)
             return packet, existing_data
 
